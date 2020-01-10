@@ -57,21 +57,17 @@
             };
 
             require(["vs/editor/editor.main"], function () {
+
+                monaco.editor.defineTheme('noj-dark', {
+                    base: 'vs-dark', // can also be vs-dark or hc-black
+                    inherit: true, // can also be false to completely replace the builtin rules
+                    rules: [
+                        { token: 'keywordControl', foreground: 'c586c0' },
+                    ]
+                });
+
                 monaco.languages.register({ id: 'wenyan' });
                 monaco.languages.setMonarchTokensProvider('wenyan', {
-                    // numeric:["又","負","零","一","二","三","四","五","六","七","八","九","十","百","千","萬","億","兆","京","垓","秭","穣","溝","澗","正","載","極","恆河沙","阿僧祇","那由他","不可思議","無量大數","分","釐","毫","絲","忽","微","纖","沙","塵","埃","渺","漠","模糊","逡巡","須臾","瞬息","彈指","剎那","六德","虛","空","清","淨"],
-                    // keywords: [
-                    //     "吾有","今有","有",
-                    //     "數","列","言","術","爻","物",
-                    //     "恆為是",
-                    //     "若非","若","者","夫",
-                    //     "乃得","乃歸空無","是謂","之術也","必先得","是術曰","乃行是術曰","欲行是術","也","云云","凡","中之","恆為是","為是","遍","乃止","其物如是",
-                    //     "等於","不等於","不大於","不小於","大於","小於",
-                    //     "吾嘗觀","之書","方悟","之義",
-                    //     "加","減","乘","除","中有陽乎","中無陰乎","變","所餘幾何","以","於","之長","之","充","銜","其餘",
-                    //     "昔之","今","是矣","其","不復存矣","是",
-                    //     "書之","名之曰","施","曰","噫","取","矣",
-                    // ],
                     constantNumeric: "又|負|零|一|二|三|四|五|六|七|八|九|十|百|千|萬|億|兆|京|垓|秭|穣|溝|澗|正|載|極|恆河沙|阿僧祇|那由他|不可思議|無量大數|分|釐|毫|絲|忽|微|纖|沙|塵|埃|渺|漠|模糊|逡巡|須臾|瞬息|彈指|剎那|六德|虛|空|清|淨",
                     constantBoolean: "陰|陽",
                     keywordsModifier: "吾有|今有|有",
@@ -84,11 +80,13 @@
                             [/(注曰|疏曰|批曰)。「「/, 'comment', '@blockComment'],
                             [/(注曰|疏曰|批曰).*$/, 'comment'],
                             [/「「/, 'string', '@string'],
+                            [/「/, 'variable.name', '@variableName'],
+                            [/。/, 'delimiter'],
                             [/@constantNumeric/, "number"],
                             [/@constantBoolean/, "constant"],
                             [/@keywordsModifier/, "keyword"],
                             [/@keywordsType/, "keyword"],
-                            [/@keywordsControl/, "keyword"],
+                            [/@keywordsControl/, "keywordControl"],
                             [/@keywordsOperator/, "operators"],
                             [/@keywordsOther/, "keyword"],
                         ],
@@ -101,6 +99,10 @@
                             [/[^」]+/, 'string'],
                             [/」」/, 'string', '@pop'],
                             [/[」]/, 'string']
+                        ],
+                        variableName:[
+                            [/[^」]+/, 'variable.name'],
+                            [/」/, 'variable.name', '@pop']
                         ]
                     },
                 });
@@ -108,13 +110,15 @@
                 editor = monaco.editor.create(document.getElementById('vscode'), {
                     value: load("example.wy"),
                     language: "wenyan",
-                    theme: "vs-dark",
+                    theme: "noj-dark",
                     fontSize: 16,
                     formatOnPaste: true,
                     formatOnType: true,
                     automaticLayout: true
                 });
+
                 $("#vscode_container").css("opacity",1);
+
             });
         }, false);
     </script>
