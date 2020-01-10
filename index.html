@@ -1,0 +1,60 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Wenyan Lang | Monaco Editor</title>
+    <!-- Necessarily Declarations -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!-- Mobile Display Declarations -->
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="theme-color" content="#3E4551">
+    <!-- Desktop App Declarations -->
+    <meta name="msapplication-TileColor" content="#3E4551">
+    <style>
+        body{
+            margin: 0;
+        }
+        #vscode_container{
+            height: 100vh;
+            width: 100vw;
+        }
+    </style>
+</head>
+<body>
+    <div id="vscode_container">
+        <div id="vscode" style="height:100%;"></div>
+    </div>
+    <script src="https://acm.njupt.edu.cn/static/library/monaco-editor/min/vs/loader.js"></script>
+    <script>
+        window.addEventListener("load",function() {
+            require.config({ paths: { 'vs': 'https://acm.njupt.edu.cn//static/library/monaco-editor/min/vs' }});
+            window.MonacoEnvironment = {
+                getWorkerUrl: function(workerId, label) {
+                    return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+                    self.MonacoEnvironment = {
+                        baseUrl: 'https://acm.njupt.edu.cn//static/library/monaco-editor/min/'
+                    };
+                    importScripts('https://acm.njupt.edu.cn//static/library/monaco-editor/min/vs/base/worker/workerMain.js');`
+                    )}`;
+                }
+            };
+
+            require(["vs/editor/editor.main"], function () {
+                editor = monaco.editor.create(document.getElementById('vscode'), {
+                    value: "#include \<stdio.h\>\n\nint main()\n{\n    int a,b;\n    scanf(\"%d %d\",&a, &b);\n    printf(\"%d\\n\",a+b);\n    return 0;\n}",
+                    language: "c",
+                    theme: "vs-dark",
+                    fontSize: 16,
+                    formatOnPaste: true,
+                    formatOnType: true,
+                    automaticLayout: true
+                });
+                $("#vscode_container").css("opacity",1);
+            });
+        }, false);
+    </script>
+</body>
