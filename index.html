@@ -83,6 +83,7 @@
                         root: [
                             [/(注曰|疏曰|批曰)。「「/, 'comment', '@blockComment'],
                             [/(注曰|疏曰|批曰).*$/, 'comment'],
+                            [/「「/, 'string', '@string'],
                             [/@constantNumeric/, "number"],
                             [/@constantBoolean/, "constant"],
                             [/@keywordsModifier/, "keyword"],
@@ -95,6 +96,11 @@
                             [/[^」]+/, 'comment'],
                             [/」」/, 'comment', '@pop'],
                             [/[」]/, 'comment']
+                        ],
+                        string:[
+                            [/[^」]+/, 'string'],
+                            [/」」/, 'string', '@pop'],
+                            [/[」]/, 'string']
                         ]
                     },
                 });
