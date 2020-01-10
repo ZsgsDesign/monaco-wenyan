@@ -34,6 +34,16 @@
     <script src="https://acm.njupt.edu.cn/static/library/monaco-editor/min/vs/loader.js"></script>
     <script>
         window.addEventListener("load",function() {
+
+            function load(name) {
+                let xhr = new XMLHttpRequest(),
+                    okStatus = document.location.protocol === "file:" ? 0 : 200;
+                xhr.open('GET', name, false);
+                xhr.overrideMimeType("text/html;charset=utf-8");//默认为utf-8
+                xhr.send(null);
+                return xhr.status === okStatus ? xhr.responseText : null;
+            }
+
             require.config({ paths: { 'vs': 'https://acm.njupt.edu.cn//static/library/monaco-editor/min/vs' }});
             window.MonacoEnvironment = {
                 getWorkerUrl: function(workerId, label) {
@@ -47,9 +57,37 @@
             };
 
             require(["vs/editor/editor.main"], function () {
+                // Register a new language
+                monaco.languages.register({ id: 'wenyan' });
+                
+                // Register a tokens provider for the language
+                monaco.languages.setMonarchTokensProvider('wenyan', {
+                    keywords: [
+                        "吾有","今有","有",
+                        "數","列","言","術","爻","物",
+                        "恆為是",
+                        "若非","若","者","夫",
+                        "乃得","乃歸空無","是謂","之術也","必先得","是術曰","乃行是術曰","欲行是術","也","云云","凡","中之","恆為是","為是","遍","乃止","其物如是",
+                        "等於","不等於","不大於","不小於","大於","小於",
+                        "吾嘗觀","之書","方悟","之義",
+                        "加","減","乘","除","中有陽乎","中無陰乎","變","所餘幾何","以","於","之長","之","充","銜","其餘",
+                        "昔之","今","是矣","其","不復存矣","是",
+                        "書之","名之曰","施","曰","噫","取","矣",
+                    ],
+                    tokenizer: {
+                        root: [
+                            [/[\u4E00-\u9FA5]+/, {
+                                cases: {
+                                    '@keywords': { token: 'keyword' },
+                                }
+                            }],
+                        ]
+                    }
+                });
+
                 editor = monaco.editor.create(document.getElementById('vscode'), {
-                    value: "#include \<stdio.h\>\n\nint main()\n{\n    int a,b;\n    scanf(\"%d %d\",&a, &b);\n    printf(\"%d\\n\",a+b);\n    return 0;\n}",
-                    language: "c",
+                    value: load("example.wy"),
+                    language: "wenyan",
                     theme: "vs-dark",
                     fontSize: 16,
                     formatOnPaste: true,
